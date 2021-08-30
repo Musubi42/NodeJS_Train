@@ -19,6 +19,7 @@
   "homepage": "https://github.com/Musubi42/NodeJS_Train#readme",
   "dependencies": {
     "express": "^4.17.1",
+    "joi": "^13.0.1",
     "mongoose": "^6.0.2",
     "underscore": "^1.13.1"
   },
