@@ -1,22 +1,10 @@
-POST http://localhost:3000/api/users/usersposttest HTTP/1.1
-content-type: application/json
-
-{
-    "username": "test"
-}
-
-###
-
-GET http://localhost:3000/api/users/userstest
-
-
 ### Register 
 POST http://localhost:3000/api/auth/register HTTP/1.1
 content-type: application/json
 
 {
-    "username": "lol",
-    "email": "lol@example.com",
+    "username": "blue",
+    "email": "blue@example.com",
     "password": "test123"
 }
 
@@ -26,6 +14,22 @@ content-type: application/json
 bearer: 
 
 {
-    "username": "lol",
+    "username": "blue",
     "password": "test123"
 }
+
+
+### Change value
+PUT http://localhost:3000/api/users/61a25a21b9d699f3dc70a129 HTTP/1.1
+content-type: application/json
+token: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxYTI1YTIxYjlkNjk5ZjNkYzcwYTEyOSIsImlzQWRtaW4iOnRydWUsImlhdCI6MTYzODAzMDYxNywiZXhwIjoxNjM4Mjg5ODE3fQ.xhIN6mvgY6u69CuSX_kfQjO3ybZi-MseqR45pNUPqrU"
+
+{
+    "username": "admin"
+}
+
+
+### FIND USER BY ID
+GET http://localhost:3000/api/users/61a25a21b9d699f3dc70a129 HTTP/1.1
+content-type: application/json
+token: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxYTI1YTIxYjlkNjk5ZjNkYzcwYTEyOSIsImlzQWRtaW4iOnRydWUsImlhdCI6MTYzODAzMDA2MiwiZXhwIjoxNjM4Mjg5MjYyfQ.vwK333h_vXq3HgZZNNIpfY7_Z3UKtvr4ygTvDb3L75c"
