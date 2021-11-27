@@ -10,12 +10,22 @@ content-type: application/json
 GET http://localhost:3000/api/users/userstest
 
 
-###
+### Register 
 POST http://localhost:3000/api/auth/register HTTP/1.1
 content-type: application/json
 
 {
-    "username": "test",
-    "email": "test@example.com",
+    "username": "lol",
+    "email": "lol@example.com",
+    "password": "test123"
+}
+
+### Login 
+POST http://localhost:3000/api/auth/login HTTP/1.1
+content-type: application/json
+bearer: 
+
+{
+    "username": "lol",
     "password": "test123"
 }
