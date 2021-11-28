@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 const verifyToken = (req, res, next) => {
   const authHeader = req.headers.token;
   if (authHeader) {
-    const token = authHeader.split(" ")[1]; //Permet de récupérer juste le Token
+    const token = authHeader.split(" ")[1];
     jwt.verify(token, process.env.JWT_SEC, (err, user) => {
       if (err) res.status(403).json("Token is not valid!");
       req.user = user;
@@ -38,4 +38,4 @@ module.exports = {
   verifyToken,
   verifyTokenAndAuthorization,
   verifyTokenAndAdmin,
-}; //Ecriture avec Curly braces pour pouvoir export un autre module
+};

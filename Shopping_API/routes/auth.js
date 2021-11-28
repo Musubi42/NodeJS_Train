@@ -1,9 +1,9 @@
 const router = require("express").Router();
-const User = require("../models/Users");
+const User = require("../models/User");
 const CryptoJS = require("crypto-js");
 const jwt = require("jsonwebtoken");
 
-//Register
+//REGISTER
 router.post("/register", async (req, res) => {
   const newUser = new User({
     username: req.body.username,
@@ -11,12 +11,12 @@ router.post("/register", async (req, res) => {
     password: CryptoJS.AES.encrypt(
       req.body.password,
       process.env.PASS_SEC
-    ).toString(), //Je rentre en BDD le mot de passe hashé
+    ).toString(),
   });
 
   try {
-    const SavedUser = await newUser.save(); //Await permet d'attendre que le code async s'execute
-    res.status(201).json(SavedUser);
+    const savedUser = await newUser.save();
+    res.status(201).json(savedUser);
   } catch (err) {
     res.status(500).json(err);
   }
@@ -24,43 +24,45 @@ router.post("/register", async (req, res) => {
 
 //LOGIN
 
-router.post("/login", async (req, res) => {
-  try {
-    const user = await User.findOne({
-      //Permet de récupérer la data d'un user grâce son userName
-      username: req.body.username,
-    });
-    !user && res.status(401).json("Wrong Username"); //Si on ne récupére pas la data c'est que l'user associé à l'userName n'existe pas
+router.post('/login', async (req, res) => {
+    try{
+        const user = await User.findOne(
+            {
+                userName: req.body.user_name
+            }
+        );
 
-    const hashedPassword = CryptoJS.AES.decrypt(
-      user.password,
-      process.env.PASS_SEC
-    ); //On récupére le mot de passe de l'user, qu'on décrypte avec la pass_sec
-    const originalPassword = hashedPassword.toString(CryptoJS.enc.Utf8); //HashedPassword étant un array chelou, il faut le transformer en string pour le comparer avec le mot de passe envoyé
-    originalPassword !== req.body.password &&
-      res.status(401).json("Wrong Password"); //Si le mot de passe est différent il y'a une erreur
+        !user && res.status(401).json("Wrong User Name");
 
-    const accessToken = jwt.sign(
-      {
-        id: user._id,
-        isAdmin: user.isAdmin,
-      },
-      process.env.JWT_SEC,
-      {
-        expiresIn: "3d",
-      }
-    );
+        const hashedPassword = CryptoJS.AES.decrypt(
+            user.password,
+            process.env.PASS_SEC
+        );
 
-    //Permet d'exclure password de la réponse HTTP
-    const { password, ...others } = user._doc;
 
-    res.status(200).json({
-      ...others,
-      accessToken,
-    });
-  } catch (err) {
-    res.status(500).json(err);
-  }
+        const originalPassword = hashedPassword.toString(CryptoJS.enc.Utf8);
+
+        const inputPassword = req.body.password;
+        
+        originalPassword != inputPassword && 
+            res.status(401).json("Wrong Password");
+
+        const accessToken = jwt.sign(
+        {
+            id: user._id,
+            isAdmin: user.isAdmin,
+        },
+        process.env.JWT_SEC,
+            {expiresIn:"3d"}
+        );
+  
+        const { password, ...others } = user._doc;  
+        res.status(200).json({...others, accessToken});
+
+    }catch(err){
+        res.status(500).json(err);
+    }
+
 });
 
 module.exports = router;
