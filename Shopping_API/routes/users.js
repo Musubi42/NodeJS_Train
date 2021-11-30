@@ -6,23 +6,18 @@ const {
 } = require("./verifyToken");
 
 const router = require("express").Router();
+const CryptoJS = require("crypto-js");
+
 
 //UPDATE
-router.put("/:id", verifyTokenAndAuthorization, async (req, res) => {
-  if (req.body.password) {
-    req.body.password = CryptoJS.AES.encrypt(
-      req.body.password,
-      process.env.PASS_SEC
-    ).toString();
-  }
-
+router.put("/update/:id", verifyTokenAndAuthorization, async (req, res) => { //Pour renseigner l'id il suffit de taper la donnée en brut juste après le "/"
   try {
     const updatedUser = await User.findByIdAndUpdate(
-      req.params.id,
+      req.params.id, //Permet de trouver le doc sur lequel update
       {
-        $set: req.body,
+        $set: req.body, //Ce que je veux update
       },
-      { new: true }
+      { new: true } //Retourne le document avec les modifications
     );
     res.status(200).json(updatedUser);
   } catch (err) {
