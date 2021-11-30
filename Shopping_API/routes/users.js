@@ -2,7 +2,7 @@ const User = require("../models/User");
 const {
   verifyToken,
   verifyTokenAndAuthorization,
-  verifyTokenAndAdmin,
+  verifyTokenAndIsAdmin,
 } = require("./verifyToken");
 
 const router = require("express").Router();
@@ -36,7 +36,7 @@ router.delete("/delete/:id", verifyTokenAndAuthorization, async (req, res) => {
 });
 
 //GET USER
-router.get("/find/:id", verifyTokenAndAdmin, async (req, res) => {
+router.get("/find/:id", verifyTokenAndIsAdmin, async (req, res) => {
   try {
     const user = await User.findById(req.params.id); //Je récupére le doc correspondant à l'id
     const { password, ...others } = user._doc; //Grâce au spreadOperator je retire le password (hashé) du résultat
@@ -47,7 +47,7 @@ router.get("/find/:id", verifyTokenAndAdmin, async (req, res) => {
 });
 
 //GET ALL USER
-router.get("/findall", verifyTokenAndAdmin, async (req, res) => {
+router.get("/findall", verifyTokenAndIsAdmin, async (req, res) => {
   const query = req.query.new;
   try {
     const users = query
@@ -60,9 +60,9 @@ router.get("/findall", verifyTokenAndAdmin, async (req, res) => {
 });
 
 //GET USER STATS
-//Utiliser l'extesion de ToDo ...
+//TODO:
 //J'aimerais bien faire une route API stats, permettant de cibler une collection, puis recup une propriété précise d'un doc selon l'age et des critere spé
-router.get("/stats/:category", verifyTokenAndAdmin, async (req, res) => {
+router.get("/stats/:category", verifyTokenAndIsAdmin, async (req, res) => {
   const date = new Date();
   const lastYear = new Date(date.setFullYear(date.getFullYear() - 1)); //Permet d'obtenir l'année n-1
 
@@ -70,7 +70,7 @@ router.get("/stats/:category", verifyTokenAndAdmin, async (req, res) => {
     const data = await User.aggregate([
       {
         $match: {
-          createdAt: { $gte: lastYear },
+          createdAt: { $gte: lastYear }, //Permet de matcher les conditions
           // catagory: { $eq: req.body.category },
         },
       },
