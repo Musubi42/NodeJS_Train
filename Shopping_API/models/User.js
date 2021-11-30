@@ -6,7 +6,9 @@ const UsersSchema = new mongoose.Schema(
     username: {
       type: String,
       required: true,
-      // unique: true // Cannot replicate this user name
+      // Cannot replicate this user name
+      unique: false //Une fois le schema crée je ne peux pas le modifier d'un claquement de doigt, voir la doc
+      //https://mongoosejs.com/docs/faq.html
     },
     email: {
       type: String,

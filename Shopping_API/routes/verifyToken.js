@@ -1,13 +1,12 @@
 const jwt = require("jsonwebtoken");
 
-const verifyToken = (req, res, next) => {
+const verifyToken = (req, res, next) => { //En transmettant le Token JWT on récupere l'user
   const authHeader = req.headers.token;
   if (authHeader) {
     const token = authHeader.split(" ")[1];
     jwt.verify(token, process.env.JWT_SEC, (err, user) => {
       if (err) res.status(403).json("Token is not valid!");
       req.user = user;
-      console.log(user);
       next();
     });
   } else {
@@ -16,13 +15,8 @@ const verifyToken = (req, res, next) => {
 };
 
 const verifyTokenAndAuthorization = (req, res, next) => {
-  // for(us in req) {
-  //   console.log(us);
-  // }
-  console.log("req.params.id : " + req.params.id);
-
   verifyToken(req, res, () => {
-    if (req.user.id === req.params.id || req.user.isAdmin) {
+    if (req.user.id === req.params.id || req.user.isAdmin) { //req.user.id vient de la fonction verifyToken
       next();
     } else {
       res.status(403).json("You are not alowed to do that!");

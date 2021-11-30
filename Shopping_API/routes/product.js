@@ -7,23 +7,24 @@ const {
 
 const router = require("express").Router();
 
-// CREATE 
+// CREATE
 
-router.post("/create", verifyTokenAndAdmin, async (req, res) => {  // Only an admin can create a new product
-    const newProduct = new Product(req.body);
+router.post("/create", verifyTokenAndAdmin, async (req, res) => {
+  // Only an admin can create a new product
+  const newProduct = new Product(req.body);
 
-    try {
-        const savedProduct = await newProduct.save();
-        res.status(200).json(savedProduct);
-    }catch (err) {
-        res.status(500).json(err);
-    }
-})
-
+  try {
+    const savedProduct = await newProduct.save();
+    res.status(200).json(savedProduct);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
 
 //UPDATE
 //Le title étant unique je fais la maj sur cette donnée
-router.put("/update/:id", verifyTokenAndAdmin, async (req, res) => { //Pour renseigner l'id il suffit de taper la donnée en brut juste après le "/"
+router.put("/update/:id", verifyTokenAndAdmin, async (req, res) => {
+  //Pour renseigner l'id il suffit de taper la donnée en brut juste après le "/"
 
   try {
     const updatedProduct = await Product.findByIdAndUpdate(
@@ -39,7 +40,6 @@ router.put("/update/:id", verifyTokenAndAdmin, async (req, res) => { //Pour rens
   }
 });
 
-
 //DELETE
 router.delete("/delete/:id", verifyTokenAndAdmin, async (req, res) => {
   try {
@@ -49,7 +49,6 @@ router.delete("/delete/:id", verifyTokenAndAdmin, async (req, res) => {
     res.status(500).json(err);
   }
 });
-
 
 //GET PRODUCT
 router.get("/find/:id", async (req, res) => {
@@ -61,7 +60,6 @@ router.get("/find/:id", async (req, res) => {
   }
 });
 
-
 //GET ALL PRODUCT
 router.get("/find", async (req, res) => {
   const queryNew = req.query.new;
@@ -70,12 +68,16 @@ router.get("/find", async (req, res) => {
   try {
     let products;
 
-    if(queryNew) {
-      products = await Product.find().sort({createdAt: -1}).limit(2);
-    } else if(queryCategory) {
-      products = await Product.find({categories: {
-        $in: [queryCategory],
-      }}).sort({createdAt: -1}).limit(5);
+    if (queryNew) {
+      products = await Product.find().sort({ createdAt: -1 }).limit(2);
+    } else if (queryCategory) {
+      products = await Product.find({
+        categories: {
+          $in: [queryCategory],
+        },
+      })
+        .sort({ createdAt: -1 })
+        .limit(5);
     } else {
       products = await Product.find();
     }
